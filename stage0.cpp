@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <ctime>
+#include <cctype>
 
 using namespace std;
 //Constructor
@@ -59,9 +60,9 @@ void Compiler::createListingHeader()
 	//print "STAGE0:", name(s), DATE, TIME OF DAY
 	//print "LINE NO:", "SOURCE STATEMENT"
 	//line numbers and source statements should be aligned under the headings
-	cout << "STAGE0:	LOGAN WONGBANGCHUAD		";
-	cout << ctime(&now) << endl;
-	cout << "LINE NO.              SOURCE STATEMENT" << endl;
+	listingFile << "STAGE0:  LOGAN WONGBANGCHUAD	";
+	listingFile << ctime(&now) << endl;
+	listingFile << "LINE NO.              SOURCE STATEMENT" << endl << endl;
 
 }
 
@@ -89,7 +90,8 @@ void Compiler::parser()
 //-----------------------------------------------------------------------------------------------------------------------------------
 void Compiler::createListingTrailer()
 {
-	cout << "COMPILATION TERMINATED		"<< errorCount << " ERRORS ENCOUNTERED";
+	listingFile << endl;
+	listingFile << "COMPILATION TERMINATED      "<< errorCount << " ERRORS ENCOUNTERED" << endl;
 
 }
 
@@ -97,6 +99,7 @@ void Compiler::createListingTrailer()
 //-----------------------------------------------------------------------------------------------------------------------------------
 void Compiler::processError(string err)
 {
+	cout << err << endl;
 	listingFile << err;
 	//Output err to listingFile
 	exit(EXIT_FAILURE);
@@ -124,6 +127,7 @@ char Compiler::nextChar()
 		listingFile << ch;
 	}
 	prevChar = ch;
+	//cout << ch << endl << endl;
 	return ch;
 }
 //nextToken
@@ -137,11 +141,11 @@ string Compiler::nextToken()
 		if(ch == '{')
 		{
 			char temp = nextChar();
-			while(temp != END_OF_FILE || temp != '}')
+			while(temp != END_OF_FILE && temp != '}')
 			{
 				cout << "Enter nextToken comment loop" << endl;
 				temp = nextChar();
-				 //keep looping
+				//keep looping
 			}
 			cout << "Exit nextToken comment loop" << endl;
 			if(ch == END_OF_FILE)
@@ -205,6 +209,8 @@ string Compiler::nextToken()
 			processError("illegal symbol");
 		}
 	}
+	
+	cout << "				Token: " << token << endl;
 	cout << "Exit nextToken" << endl;
  return token;
 }
@@ -233,34 +239,86 @@ bool Compiler::isSpecialSymbol(char c) const // determines if c is a special sym
 
 //isNonKeyId
 //-----------------------------------------------------------------------------------------------------------------------------------
+	
 bool Compiler::isNonKeyId(string s) const // determines if s is a non_key_id
 {
-	cout << "Enter isNonKeyId" << endl;
+    // A non-key ID must not be empty
+    if (s.empty())
+        return false;
+
+    // A non-key ID cannot start or end with an underscore
+    if (s[0] == '_' || s[s.length() - 1] == '_')
+        return false;
+
+    // A non-key ID cannot be a keyword
+    if (isKeyword(s))
+        return false;
+
+    // A non-key ID must consist only of lowercase letters, digits, or underscores
+    // Additionally, it cannot contain consecutive underscores
+    for (uint i = 0; i < s.length(); ++i)
+    {
+        char ch = s[i];
+
+        if (!(islower(ch) || isdigit(ch) || ch == '_')) // Ensure valid characters
+            return false;
+
+        if (ch == '_' && i > 0 && s[i - 1] == '_') // Check for consecutive underscores
+            return false;
+    }
+
+    return true; // Passed all checks
+}
+
+	/*
+	//cout << "Enter isNonKeyId" << endl;
     if (isalpha(s[0])) 
 	{
+		//cout << "true isNonKeyId" << endl;
         return true;
     }
 	
 	if(isInteger(s))
 	{
+		//cout << "true isNonKeyId" << endl;
 		return true;
 	}
 	if(s[0] == '_')
 	{
+		//cout << "true isNonKeyId" << endl;
 		return true;
 	}
+	//cout << "false isNonKeyId" << endl;
     return false;
-}
+	*/
 
 //isInteger
 //-----------------------------------------------------------------------------------------------------------------------------------
 bool Compiler::isInteger(string s) const  // determines if s is an integer
 {
-	if(isdigit(stoi(s)))
+	if (s.empty())
+		return false;
+	
+	if(s[0] == '-' || s[0] == '+')
 	{
-		return true;
+			for (uint i = 1; i < s.length(); ++i) 
+			{
+			//cout << "is integer false: " << s[i] << endl;
+				if (!isdigit(s[i])) 
+					return false;
+			}
 	}
-	return false;
+	else
+	{
+		for (uint i = 0; i < s.length(); ++i) 
+		{
+			//cout << "is integer false: " << s[i] << endl;
+			if (!isdigit(s[i])) 
+				return false;
+		}
+	}
+	
+	return true;
 }
 
 //isBoolean
@@ -278,10 +336,16 @@ bool Compiler::isBoolean(string s) const  // determines if s is a boolean
 //-----------------------------------------------------------------------------------------------------------------------------------
 bool Compiler::isLiteral(string s) const  // determines if s is a literal
 {
-	if(isInteger(s) || isBoolean(s) || s == "not" || s == "+" || s == "-")
+	string notString = "";
+	notString += s[0];
+	notString += s[1];
+	notString += s[2];
+	if(isInteger(s) || isBoolean(s) || (notString == "not" && isBoolean(s)) || (s[0] == '+' && isInteger(s))|| (s[0] == '-' && isInteger(s)) || (s == "integer") || (s == "boolean"))
 	{
+		cout << "is literal true" << endl;
 		return true;
 	}
+	cout << "is literal false: " << s << endl;
 	return false;
 }
 
@@ -316,8 +380,16 @@ string Compiler::genInternalName(storeTypes stype) const
 void Compiler::insert(string externalName, storeTypes inType, modes inMode, string inValue, allocation inAlloc, int inUnits)
 {
 	cout << "Enter insert" << endl;
+	if(inValue == "true")
+	{
+		inValue = "-1";
+	}
+	else if(inValue == "false")
+	{
+		inValue = "0";
+	}
 	SymbolTableEntry symbolTableEntry(externalName, inType, inMode, inValue, inAlloc, inUnits);
-	SymbolTableEntry elseTableEntry(genInternalName(inType), inType, inMode, inValue, inAlloc, inUnits);
+	//SymbolTableEntry elseTableEntry(genInternalName(inType), inType, inMode, inValue, inAlloc, inUnits);
 
 
 	//Build the first separated by a comma
@@ -343,8 +415,11 @@ void Compiler::insert(string externalName, storeTypes inType, modes inMode, stri
 				symbolTable.insert({name, symbolTableEntry});
 				//symbolTable[name]=(name,inType,inMode,inValue,inAlloc,inUnits)
 			else
+			{
+				SymbolTableEntry elseTableEntry(genInternalName(inType), inType, inMode, inValue, inAlloc, inUnits);
 				symbolTable.insert({name, elseTableEntry});
 				//symbolTable[name]=(genInternalName(inType),inType,inMode,inValue,inAlloc,inUnits)
+			}
 		}
 	}
 		cout << "Exit insert" << endl;
@@ -356,13 +431,21 @@ void Compiler::insert(string externalName, storeTypes inType, modes inMode, stri
 
 storeTypes Compiler::whichType(string name) // tells which data type a name has
 {
+	cout << "Enter whichType" << endl;
+	cout << "name: " << name << endl;
 	storeTypes dataType;
 	if (isLiteral(name))
 	{
-		if (isLiteral(name) && isBoolean(name))
+		if (isBoolean(name))
+		{
+			//cout << BOOLEAN << endl;
 			return BOOLEAN;
+		}
 		else
+		{
+			//cout << INTEGER << endl;
 			return INTEGER;
+		}
 	}
 	else //name is an identifier and hopefully a constant
 	{
@@ -370,7 +453,9 @@ storeTypes Compiler::whichType(string name) // tells which data type a name has
 			dataType = symbolTable.find(name)->second.getDataType();
 		else
 			processError("reference to undefined constant");
+		return dataType;
 	}
+	//cout << dataType << endl;
 	return dataType;
 }
 
@@ -387,14 +472,16 @@ string Compiler::whichValue(string name) // tells which value a name has
 			value = symbolTable.find(name)->second.getValue();
 		else
 		{
+			/*
 			if(symbolTable.find(name) != symbolTable.end())
 			{
 				value = symbolTable.find(name)->second.getValue();
 			}
 			else
 			{
+				*/
 				processError("reference to undefined constant");
-			}
+			//}
 		}
 	return value;
 	
@@ -431,25 +518,28 @@ void Compiler::emit(string label, string instruction, string operands, string co
 
 void Compiler::emitPrologue(string progName, string)
 {   
+	time_t now = time (NULL);
 	//%INCLUDE "Along32.inc"
 	//%INCLUDE "Macros_Along.inc"
 	//Output identifying comments at beginning of objectFile
-	objectFile << "Logan Wongbangchuad" << endl;
-	objectFile << "CS 4301" << endl;
-	objectFile << "Stage 0" << endl;
+	objectFile << "; Logan Wongbangchuad		"  << ctime(&now);
 	
 	objectFile << "%INCLUDE \"Along32.inc\"" << endl;
-	objectFile << "%INCLUDE \"Macros_Along.inc\"" << endl;
+	objectFile << "%INCLUDE \"Macros_Along.inc\"" << endl << endl;
 
 	//Output the %INCLUDE directives
 	emit("SECTION", ".text");
+	objectFile << endl;
 	emit("global", "_start", "", "; program " + progName);
+	objectFile << endl << endl;
 	emit("_start:");
+	objectFile << endl;
 }
 
 void Compiler::emitEpilogue(string, string)
 {
 	emit("","Exit", "{0}");
+	objectFile << endl << endl;
 	emitStorage();
 }
 
@@ -457,6 +547,7 @@ void Compiler::emitStorage()
 {
 	cout << "Enter emitStorage" << endl;
 	emit("SECTION", ".data");
+	objectFile << endl;
 	
 	map<string, SymbolTableEntry>::iterator itr;
 	
@@ -464,19 +555,21 @@ void Compiler::emitStorage()
 	{
 		if(itr->second.getAlloc() == YES && itr->second.getMode() == CONSTANT)
 		{
-			emit(itr->second.getInternalName(), "dd", itr->second.getValue());
+			emit(itr->second.getInternalName(), "dd", itr->second.getValue(),"; " + itr->first);
+			objectFile << endl;
 		}
 	}
 	
 	objectFile << "\n";
 	
 	emit("SECTION", ".bss");
-	
+	objectFile << endl;
 		for(itr=symbolTable.begin(); itr != symbolTable.end(); ++itr)
 		{
 			if(itr->second.getAlloc() == YES && itr->second.getMode() == VARIABLE)
 			{
-				emit(itr->second.getInternalName(), "resd", "1");
+				emit(itr->second.getInternalName(), "resd", "1", "; " + itr->first);
+				objectFile << endl;
 			}
 		}
 	cout << "Exit emitStorage" << endl;
@@ -566,12 +659,12 @@ void Compiler::constStmts() //token should be NON_KEY_ID
 	if (nextToken() != "=")
 		processError("\"=\" expected");
 	y = nextToken();
-	if (y != "+" || y != "-" || y != "not" || !isNonKeyId(y) || y != "true" || y != "false" || !isInteger(y))
+	if (y != "+" && y != "-" && y != "not" && !isNonKeyId(y) && y != "true" && y != "false" && !isInteger(y))
 		processError("token to right of \"=\" illegal");
 	if (y == "+" || y == "-")
 	{
 		if (!isInteger(nextToken()))
-		processError("integer expected after sign");
+			processError("integer expected after sign");
 		y = y + token;
 	}
 	if (y == "not")
@@ -586,14 +679,19 @@ void Compiler::constStmts() //token should be NON_KEY_ID
 	if (nextToken() != ";")
 		processError("semicolon expected");
 	
-	if (whichType(y) != INTEGER || whichType(y) != BOOLEAN )
+	//cout << y << endl;
+	if (whichType(y) != INTEGER && whichType(y) != BOOLEAN )
 		processError("data type of token on the right-hand side must be INTEGER or BOOLEAN");
 	insert(x,whichType(y),CONSTANT,whichValue(y),YES,1);
 	x = nextToken();
-	if (x != "begin" || x != "var" || !isNonKeyId(x))
+	if (x != "begin" && x != "var" && !isNonKeyId(x))
 		processError("non-keyword identifier, \"begin\", or \"var\" expected");
 	if (isNonKeyId(x))
+	{
+		cout << "Recursive call to constStmts" << endl;
 		constStmts();
+	}
+	cout << "bad constStmts" << endl;
 }
 
 
@@ -609,14 +707,17 @@ void Compiler::varStmts() //token should be NON_KEY_ID
 	if (token != ":")
 		processError("\":\" expected");
 	string tok = nextToken();
-	if (tok != "integer" || tok != "boolean")
+	cout << tok << endl;
+	if (tok != "integer" && tok != "boolean")
 		processError("illegal type follows \":\"");
 	y = token;
+	storeTypes type;
+	type = y == "integer" ? INTEGER : BOOLEAN;
 	if (nextToken() != ";")
 		processError("semicolon expected");
-	insert(x,whichType(y),VARIABLE,"",YES,1);
+	insert(x,type,VARIABLE,"",YES,1);
 	string tok2 = nextToken();
-	if (tok2 != "begin" || !isNonKeyId(tok2))
+	if (tok2 != "begin" && !isNonKeyId(tok2))
 		processError("non-keyword identifier or \"begin\" expected");
 	if (isNonKeyId(tok2))
 		varStmts();
