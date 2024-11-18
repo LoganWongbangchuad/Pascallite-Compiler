@@ -91,7 +91,10 @@ void Compiler::parser()
 void Compiler::createListingTrailer()
 {
 	listingFile << endl;
-	listingFile << "COMPILATION TERMINATED      "<< errorCount << " ERRORS ENCOUNTERED" << endl;
+	if(errorCount == 0)
+		listingFile << "COMPILATION TERMINATED      "<< errorCount << " ERRORS ENCOUNTERED" << endl;
+	else
+		listingFile << "COMPILATION TERMINATED      "<< errorCount << " ERROR ENCOUNTERED" << endl;
 
 }
 
@@ -100,8 +103,12 @@ void Compiler::createListingTrailer()
 void Compiler::processError(string err)
 {
 	cout << err << endl;
-	listingFile << err;
+	listingFile << endl;
+	listingFile << "Error: Line " << lineNo << ": ";
+	listingFile << err << endl;
+	errorCount++;
 	//Output err to listingFile
+	createListingTrailer();
 	exit(EXIT_FAILURE);
 
 }
@@ -263,8 +270,10 @@ bool Compiler::isNonKeyId(string s) const // determines if s is a non_key_id
         if (!(islower(ch) || isdigit(ch) || ch == '_')) // Ensure valid characters
             return false;
 
-        if (ch == '_' && i > 0 && s[i - 1] == '_') // Check for consecutive underscores
-            return false;
+        //if (ch == '_' && i > 0 && s[i - 1] == '_') // Check for consecutive underscores
+		if(i > 0 || i < s.length() - 1)
+			if (s[i]== '_' && s[i + 1] == '_') // Check for consecutive underscores
+				return false;
     }
 
     return true; // Passed all checks
