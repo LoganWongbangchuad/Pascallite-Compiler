@@ -102,7 +102,7 @@ void Compiler::createListingTrailer()
 //-----------------------------------------------------------------------------------------------------------------------------------
 void Compiler::processError(string err)
 {
-	cout << err << endl;
+	//cout << err << endl;
 	listingFile << endl;
 	listingFile << "Error: Line " << lineNo << ": ";
 	listingFile << err << endl;
@@ -141,7 +141,7 @@ char Compiler::nextChar()
 //-----------------------------------------------------------------------------------------------------------------------------------
 string Compiler::nextToken()
 {
-	cout << "Enter nextToken" << endl;
+	//cout << "Enter nextToken" << endl;
 	token = "";
 	while (token == "")
 	{
@@ -150,11 +150,11 @@ string Compiler::nextToken()
 			char temp = nextChar();
 			while(temp != END_OF_FILE && temp != '}')
 			{
-				cout << "Enter nextToken comment loop" << endl;
+				//cout << "Enter nextToken comment loop" << endl;
 				temp = nextChar();
 				//keep looping
 			}
-			cout << "Exit nextToken comment loop" << endl;
+			//cout << "Exit nextToken comment loop" << endl;
 			if(ch == END_OF_FILE)
 			{
 				processError("unexpected end of file");
@@ -197,11 +197,11 @@ string Compiler::nextToken()
 			ch = nextChar();
 			while(isdigit(ch) && ch != END_OF_FILE)
 			{
-				cout << "Enter nextToken isDigit loop" << endl;
+				//cout << "Enter nextToken isDigit loop" << endl;
 				token+=ch;
 				ch = nextChar();
 			}
-			cout << "Exit nextToken isDigit loop" << endl;
+			//cout << "Exit nextToken isDigit loop" << endl;
 			if(ch == END_OF_FILE)
 			{
 				processError("unexpected end of file");
@@ -217,8 +217,8 @@ string Compiler::nextToken()
 		}
 	}
 	
-	cout << "				Token: " << token << endl;
-	cout << "Exit nextToken" << endl;
+	//cout << "				Token: " << token << endl;
+	//cout << "Exit nextToken" << endl;
  return token;
 }
 
@@ -351,10 +351,10 @@ bool Compiler::isLiteral(string s) const  // determines if s is a literal
 	notString += s[2];
 	if(isInteger(s) || isBoolean(s) || (notString == "not" && isBoolean(s)) || (s[0] == '+' && isInteger(s))|| (s[0] == '-' && isInteger(s)) || (s == "integer") || (s == "boolean"))
 	{
-		cout << "is literal true" << endl;
+		//cout << "is literal true" << endl;
 		return true;
 	}
-	cout << "is literal false: " << s << endl;
+	//cout << "is literal false: " << s << endl;
 	return false;
 }
 
@@ -388,7 +388,7 @@ string Compiler::genInternalName(storeTypes stype) const
 //--------------------------------------------------------------------------------------------------------------------------
 void Compiler::insert(string externalName, storeTypes inType, modes inMode, string inValue, allocation inAlloc, int inUnits)
 {
-	cout << "Enter insert" << endl;
+	//cout << "Enter insert" << endl;
 	if(inValue == "true")
 	{
 		inValue = "-1";
@@ -397,6 +397,7 @@ void Compiler::insert(string externalName, storeTypes inType, modes inMode, stri
 	{
 		inValue = "0";
 	}
+	//string fifteenChars = externalName.substr(0,15);
 	SymbolTableEntry symbolTableEntry(externalName, inType, inMode, inValue, inAlloc, inUnits);
 	//SymbolTableEntry elseTableEntry(genInternalName(inType), inType, inMode, inValue, inAlloc, inUnits);
 
@@ -412,13 +413,13 @@ void Compiler::insert(string externalName, storeTypes inType, modes inMode, stri
 	
 	while (getline(names, name, ','))
 	{
+		name = name.substr(0, 15);
 		if (symbolTable.find(name) != symbolTable.end())
 			processError("symbol x is multiply defined");
 		else if (isKeyword(name))
 			processError("illegal use of keyword");
 		else //create table entry
 		{
-			name = name.substr(0, 15);
 			if (isupper(name[0]))
 				//use insert here
 				//symbolTable.insert({name, symbolTableEntry})
@@ -432,7 +433,7 @@ void Compiler::insert(string externalName, storeTypes inType, modes inMode, stri
 			}
 		}
 	}
-		cout << "Exit insert" << endl;
+		//cout << "Exit insert" << endl;
 
 }
 
@@ -441,8 +442,8 @@ void Compiler::insert(string externalName, storeTypes inType, modes inMode, stri
 
 storeTypes Compiler::whichType(string name) // tells which data type a name has
 {
-	cout << "Enter whichType" << endl;
-	cout << "name: " << name << endl;
+	//cout << "Enter whichType" << endl;
+	//cout << "name: " << name << endl;
 	storeTypes dataType;
 	if (isLiteral(name))
 	{
@@ -555,7 +556,7 @@ void Compiler::emitEpilogue(string, string)
 
 void Compiler::emitStorage()
 {
-	cout << "Enter emitStorage" << endl;
+	//cout << "Enter emitStorage" << endl;
 	emit("SECTION", ".data");
 	objectFile << endl;
 	
@@ -582,7 +583,7 @@ void Compiler::emitStorage()
 				objectFile << endl;
 			}
 		}
-	cout << "Exit emitStorage" << endl;
+	//cout << "Exit emitStorage" << endl;
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------
@@ -686,7 +687,7 @@ void Compiler::constStmts() //token should be NON_KEY_ID
 			{
 				if(symbolTable.find(token)->second.getDataType() != BOOLEAN)
 				{
-					cout << "here" << endl;
+					//cout << "here" << endl;
 					processError("boolean expected after \"not\"");
 				}
 				else
@@ -712,7 +713,7 @@ void Compiler::constStmts() //token should be NON_KEY_ID
 		processError("non-keyword identifier, \"begin\", or \"var\" expected");
 	if (isNonKeyId(x))
 	{
-		cout << "Recursive call to constStmts" << endl;
+		//cout << "Recursive call to constStmts" << endl;
 		constStmts();
 	}
 }
@@ -730,7 +731,7 @@ void Compiler::varStmts() //token should be NON_KEY_ID
 	if (token != ":")
 		processError("\":\" expected");
 	string tok = nextToken();
-	cout << tok << endl;
+	//cout << tok << endl;
 	if (tok != "integer" && tok != "boolean")
 		processError("illegal type follows \":\"");
 	y = token;
