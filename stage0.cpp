@@ -413,11 +413,12 @@ void Compiler::insert(string externalName, storeTypes inType, modes inMode, stri
 	while (getline(names, name, ','))
 	{
 		if (symbolTable.find(name) != symbolTable.end())
-			processError("multiple name definition");
+			processError("symbol x is multiply defined");
 		else if (isKeyword(name))
 			processError("illegal use of keyword");
 		else //create table entry
 		{
+			name = name.substr(0, 15);
 			if (isupper(name[0]))
 				//use insert here
 				//symbolTable.insert({name, symbolTableEntry})
@@ -539,7 +540,7 @@ void Compiler::emitPrologue(string progName, string)
 	//Output the %INCLUDE directives
 	emit("SECTION", ".text");
 	objectFile << endl;
-	emit("global", "_start", "", "; program " + progName);
+	emit("global", "_start", "", "; program " + progName.substr(0,15));
 	objectFile << endl << endl;
 	emit("_start:");
 	objectFile << endl;
@@ -678,9 +679,23 @@ void Compiler::constStmts() //token should be NON_KEY_ID
 	}
 	if (y == "not")
 	{
-		if (!isBoolean(nextToken()))
-			processError("boolean expected after \"not\"");
-		if (token == "true")
+		string value = nextToken();
+		if (!isBoolean(token))
+		{
+			if(isNonKeyId(token))
+			{
+				if(symbolTable.find(token)->second.getDataType() != BOOLEAN)
+				{
+					cout << "here" << endl;
+					processError("boolean expected after \"not\"");
+				}
+				else
+				{
+					value = symbolTable.find(token)->second.getValue();
+				}
+			}
+		}
+		if (value == "true")
 			y = "false";
 		else
 			y = "true";
@@ -700,7 +715,6 @@ void Compiler::constStmts() //token should be NON_KEY_ID
 		cout << "Recursive call to constStmts" << endl;
 		constStmts();
 	}
-	cout << "bad constStmts" << endl;
 }
 
 
