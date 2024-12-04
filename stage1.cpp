@@ -151,6 +151,7 @@ OTHER ROUTINES------------------------------------------------------------------
 void Compiler::processError(string err)
 {
 	cout << err << endl;
+	cout << "Last Token: " << token << endl;
 	listingFile << endl;
 	listingFile << "Error: Line " << lineNo << ": ";
 	listingFile << err << endl;
@@ -196,10 +197,13 @@ string Compiler::getTemp()
 {
 	string temp;
 	currentTempNo++;
-	temp = "T" + currentTempNo;
+	temp = "T" + to_string(currentTempNo);
 	if (currentTempNo > maxTempNo)
+	{
 		insert(temp, UNKNOWN, VARIABLE, "", NO, 1);
-	maxTempNo++;
+		maxTempNo++;
+	}
+	cout << "temp: " << temp << endl;
 	return temp;
 }
 string Compiler::getLabel()
@@ -378,7 +382,7 @@ string Compiler::nextToken()
 		}
 	}
 	
-	cout << "									Token: " << token << endl;
+	cout << "								Token: " << token << endl;
 	//cout << "Exit nextToken" << endl;
  return token;
 }
@@ -605,7 +609,10 @@ void Compiler::insert(string externalName, storeTypes inType, modes inMode, stri
 		if (symbolTable.find(name) != symbolTable.end())
 			processError("symbol x is multiply defined");
 		else if (isKeyword(name))
+		{
+			cout << "name: " << name << endl;
 			processError("illegal use of keyword");
+		}
 		else //create table entry
 		{
 			if (isupper(name[0]))
@@ -704,6 +711,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "+ error" << endl;
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitAdditionCode(operand1, operand2);
@@ -712,6 +720,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "- error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitSubtractionCode(operand1, operand2);
@@ -726,6 +736,8 @@ void Compiler::code(string op, string operand1, string operand2)
 		{
 			emitNegationCode(operand2);
 		}
+		cout << "neg error" << endl;
+
 		processError("compiler error since function code should not be called with illegal arguments");
 	}
 	else if (op == "not")
@@ -738,6 +750,7 @@ void Compiler::code(string op, string operand1, string operand2)
 		{
 			emitNotCode(operand2);
 		}
+		cout << "not error" << endl;
 
 		processError("compiler error since function code should not be called with illegal arguments");
 	}
@@ -745,6 +758,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "* error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitMultiplicationCode(operand1, operand2);
@@ -753,6 +768,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "div error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitDivisionCode(operand1, operand2);
@@ -761,6 +778,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "mod error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitModuloCode(operand1, operand2);
@@ -769,6 +788,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "and error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitAndCode(operand1, operand2);
@@ -777,6 +798,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "or error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitOrCode(operand1, operand2);
@@ -785,6 +808,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "= error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitEqualityCode(operand1, operand2);
@@ -793,6 +818,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "< error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitLessThanCode(operand1, operand2);
@@ -801,6 +828,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "<= error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitLessThanOrEqualToCode(operand1, operand2);
@@ -809,6 +838,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "> error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitGreaterThanCode(operand1, operand2);
@@ -817,6 +848,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << ">= error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitGreaterThanOrEqualToCode(operand1, operand2);
@@ -825,6 +858,8 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << "<> error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitInequalityCode(operand1, operand2);
@@ -833,12 +868,18 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
+			cout << ":= error" << endl;
+
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitAssignCode(operand1, operand2);
 	}
 	else
+	{
+		cout << "compiler error" << endl;
+
 		processError("compiler error since function code should not be called with illegal arguments");
+	}
 }
 void Compiler::pushOperator(string op)
 {
@@ -860,6 +901,7 @@ string Compiler::popOperator()
 
 		processError("compiler error; operator stack underflow");
 	}
+	return "";
 }
 void Compiler::pushOperand(string operand)
 {
@@ -884,7 +926,9 @@ string Compiler::popOperand()
 	else
 	{
 		processError("compiler error; operand stack underflow");
-}	}
+	}	
+	return "";
+}
 
 
 
@@ -919,6 +963,7 @@ void Compiler::emit(string label, string instruction, string operands, string co
 {    
 	//Turn on left justification in objectFile
 	objectFile << left << setw(8) << label << setw(8) << instruction << setw(24) << operands << comment;
+	objectFile << endl;
 	/*
 	Output label in a field of width 8
 	Output instruction in a field of width 8
@@ -940,17 +985,17 @@ void Compiler::emitPrologue(string progName, string)
 
 	//Output the %INCLUDE directives
 	emit("SECTION", ".text");
-	objectFile << endl;
+	//objectFile << endl;
 	emit("global", "_start", "", "; program " + progName.substr(0,15));
 	objectFile << endl << endl;
 	emit("_start:");
-	objectFile << endl;
+	//objectFile << endl;
 }
 
 void Compiler::emitEpilogue(string, string)
 {
 	emit("","Exit", "{0}");
-	objectFile << endl << endl;
+	objectFile << endl;
 	emitStorage();
 }
 
@@ -958,7 +1003,7 @@ void Compiler::emitStorage()
 {
 	//cout << "Enter emitStorage" << endl;
 	emit("SECTION", ".data");
-	objectFile << endl;
+	//objectFile << endl;
 	
 	map<string, SymbolTableEntry>::iterator itr;
 	
@@ -967,20 +1012,18 @@ void Compiler::emitStorage()
 		if(itr->second.getAlloc() == YES && itr->second.getMode() == CONSTANT)
 		{
 			emit(itr->second.getInternalName(), "dd", itr->second.getValue(),"; " + itr->first);
-			objectFile << endl;
 		}
 	}
 	
 	objectFile << "\n";
 	
 	emit("SECTION", ".bss");
-	objectFile << endl;
+	//objectFile << endl;
 		for(itr=symbolTable.begin(); itr != symbolTable.end(); ++itr)
 		{
 			if(itr->second.getAlloc() == YES && itr->second.getMode() == VARIABLE)
 			{
 				emit(itr->second.getInternalName(), "resd", "1", "; " + itr->first);
-				objectFile << endl;
 			}
 		}
 	//cout << "Exit emitStorage" << endl;
@@ -1005,9 +1048,9 @@ void Compiler::emitReadCode(string operand, string)
 		{
 			processError("attempting to read to a read-only location");
 		}
-		emit("","call", "ReadInt");
-		emit("", "mov",name, contentsOfAReg);
-		contentsOfAReg = name;
+		emit("","call", "ReadInt", "; read int; value placed in eax");
+		emit("", "mov","[" + symbolTable.find(name)->second.getInternalName() + "],eax", "; store eax at " + symbolTable.find(name)->first);
+		contentsOfAReg = symbolTable.find(name)->second.getInternalName();
 	}
 	
 }
@@ -1015,7 +1058,9 @@ void Compiler::emitReadCode(string operand, string)
 void Compiler::emitWriteCode(string operand, string)
 {
 	string name;
+	
 	static bool definedStorage = false;
+	
 	istringstream names(operand);
 	while (getline(names, name, ','))
 	{
@@ -1023,19 +1068,33 @@ void Compiler::emitWriteCode(string operand, string)
 		{
 			processError("reference to undefined symbol");
 		}
-		if(name != contentsOfAReg)
+		if(symbolTable.find(name)->second.getInternalName() != contentsOfAReg)
 		{
-			emit("","mov",contentsOfAReg, name);
+			emit("","mov", "eax,[" + symbolTable.find(name)->second.getInternalName() + "]", "; load " + symbolTable.find(name)->first + " in eax" );
+			contentsOfAReg = symbolTable.find(name)->second.getInternalName();
 		}
 		if(symbolTable.find(name)->second.getDataType() == INTEGER || symbolTable.find(name)->second.getDataType() != BOOLEAN)
 		{
-			emit("", "call", "WriteInt");
+			emit("", "call", "WriteInt", "; write int in eax to standard out");
 		}
-		emit("", "call", "Crlf");
+		emit("", "call", "Crlf", "; write \\r\\n to standard out");
 	}
 }
 void Compiler::emitAssignCode(string operand1, string operand2)        // op2 = op1
 {
+	//emit("Enter emitAssignCode");
+	//cout << "operand1: " << operand1 << endl;
+	//cout << "operand2: " << operand2 << endl;
+	//cout << "contentsOfAReg: " << contentsOfAReg << endl;
+	if (symbolTable.find(operand1) == symbolTable.end())
+	{
+		processError("reference to undefined symbol " + operand1);
+	}
+	
+	else if (symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to undefined symbol " + operand2);
+	}
 	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
 	{
 		processError("incompatible types");
@@ -1044,87 +1103,841 @@ void Compiler::emitAssignCode(string operand1, string operand2)        // op2 = 
 	{
 		processError("can't read variables of this type");
 	}
-	if(symbolTable.find(operand1)->second.getValue() == symbolTable.find(operand2)->second.getValue())
+	if(operand1 == operand2)
 	{
+		//emit(symbolTable.find(operand1)->second.getValue(), symbolTable.find(operand1)->second.getInternalName());
+		//emit(symbolTable.find(operand2)->second.getValue(), symbolTable.find(operand2)->second.getInternalName());
+
+		//emit("HERE???");
 		return;
 	}
-	if(operand1 != contentsOfAReg)
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
 	{
-		emit("", "mov", contentsOfAReg, operand1);
+			//emit("Debug in emitAssign:",symbolTable.find(operand2)->second.getValue());
+
+		emit("", "mov", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; AReg = " + operand1);
+		contentsOfAReg = symbolTable.find(operand1)->second.getInternalName();
 	}
 	//emit code to store the contents of that register into the memory location pointed to by operand2
-	contentsOfAReg = operand2;
+	//emit("Debug in emitAssign: ",symbolTable.find(operand2)->second.getValue());
+	emit("","mov","[" + symbolTable.find(operand2)->second.getInternalName() + "],eax", "; " + operand2 + " = AReg");
+	contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
 	//if operand1 is a temp then free its name for reuse
+	if(isTemporary(operand1))
+	{
+		freeTemp();
+	}
+	//emit("Exiting emitAssignCode");
 }
 void Compiler::emitAdditionCode(string operand1, string operand2)       // op2 +  op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end())
+	{
+		processError("reference to undefined symbol " + operand1);
+	}
+	if(symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to undefined symbol " + operand2);
+	}
 	if(symbolTable.find(operand1)->second.getDataType() != INTEGER || symbolTable.find(operand2)->second.getDataType() != INTEGER)
 	{
 		processError("illegal type");
 	}
-	if(contentsOfAReg != operand1 || contentsOfAReg != operand2)
+	if((symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg) && isTemporary(contentsOfAReg))
 	{
-		//emit("", ) emit code to store that temp into memory
-		//change the allocate entry for the temp in the symbol table to yes deassign it
+		//emit("Debug in emitAddition[isTemp(eax) && op1 != eax && op2 != eax]:",symbolTable.find(contentsOfAReg)->second.getValue());
+		emit("", "mov", "[" + contentsOfAReg + "],eax", "; deassign AReg");// emit code to store that temp into memory
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);//change the allocate entry for the temp in the symbol table to yes deassign it
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && !isTemporary(contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		//emit("Debug in emitAddition[op1 != eax && op2 != eax]:",symbolTable.find(operand2)->second.getValue());
+		emit("", "mov", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+	}
+
+	if (contentsOfAReg == symbolTable.find(operand2)->second.getInternalName())
+	{
+		//emit code to perform register-memory addition with operand 1
+		emit("", "add", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; AReg = " + operand2 + " + " + operand1);
+	}
+	else
+	{
+		//emit code to perform register-memory addition with operand 2
+		emit("", "add", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand1 + " + " + operand2);
 	}
 	
+	if(isTemporary(operand1))
+	{
+		freeTemp();		
+	}
+	if(isTemporary(operand2))
+	{
+		freeTemp();
+	}
 	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(INTEGER);
+	//cout << "contentsOfAReg: " << contentsOfAReg << endl;
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitSubtractionCode(string operand1, string operand2)    // op2 -  op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != INTEGER || symbolTable.find(operand2)->second.getDataType() != INTEGER)
+	{
+		processError("illegal type");
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
+	{
+		emit("", "mov", "[" + contentsOfAReg + "],eax", "; deassign AReg");// emit code to store that temp into memory
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);//change the allocate entry for the temp in the symbol table to yes deassign it
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && !isTemporary(contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+	}
+	if (contentsOfAReg == symbolTable.find(operand2)->second.getInternalName())
+	{
+		emit("", "sub", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; AReg = " + operand2 + " - " + operand1);
+	}
+	else
+	{
+		emit("", "sub", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2 + " - " + operand1);
+	}
 	
+	if(isTemporary(operand1))
+	{
+		freeTemp();		
+	}
+	if(isTemporary(operand2))
+	{
+		freeTemp();		
+	}
+	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(INTEGER);
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitMultiplicationCode(string operand1, string operand2) // op2 *  op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != INTEGER || symbolTable.find(operand2)->second.getDataType() != INTEGER)
+	{
+		processError("illegal type");
+	}
+	if(isTemporary(contentsOfAReg) && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "[" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "], eax", "; deassign AReg");
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if(!isTemporary(contentsOfAReg) && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
+	{
+				//emit("Debug in emitMultiplication[op1 & op2 != eax]:",symbolTable.find(operand2)->second.getValue());
+
+		emit("", "mov", "eax, [" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+
+	}
+	if (contentsOfAReg == symbolTable.find(operand2)->second.getInternalName())
+	{
+						//emit("Debug in emitMultiplication[op2 == eax]:",symbolTable.find(operand1)->second.getValue());
+
+		emit("", "imul", "dword [" + symbolTable.find(operand1)->second.getInternalName() + "]", "; AReg = " + operand2 + " * " + operand1);
+	}
+	else
+	{
+				//emit("Debug in emitMultiplication[else clause]:",symbolTable.find(operand2)->second.getValue());
+
+		emit("", "imul", "dword [" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand1 + " * " + operand2);
+	}
+	if(isTemporary(operand1))
+    {
+      freeTemp();   
+    }
+	if(isTemporary(operand2))
+    {
+      freeTemp();   
+    }
 	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(INTEGER);
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitDivisionCode(string operand1, string operand2)       // op2 /  op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != INTEGER || symbolTable.find(operand2)->second.getDataType() != INTEGER)
+	{
+		processError("illegal type");
+	}
+	if(isTemporary(contentsOfAReg) && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "[" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "], eax", "; deassign AReg");
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if(!isTemporary(contentsOfAReg) && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "eax, [" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2 + " div " + operand1);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+	}
+	emit("", "cdq", "", "; sign extend dividend from eax to edx:eax");
+	emit("", "idiv", "dword [" + symbolTable.find(operand1)->second.getInternalName() + "]", "; AReg = " + operand2 + " div " + operand1);
+	//emit("","xchg", "eax,edx", "; exchange quotient and remainder");
+    if(isTemporary(operand1))
+    {
+      freeTemp();   
+    }
+    if(isTemporary(operand2))
+    {
+      freeTemp();   
+    }
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(INTEGER);
+	pushOperand(contentsOfAReg);
 	
 }
 void Compiler::emitModuloCode(string operand1, string operand2)         // op2 %  op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != INTEGER || symbolTable.find(operand2)->second.getDataType() != INTEGER)
+	{
+		processError("illegal type");
+	}
+	if(isTemporary(contentsOfAReg) && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "[" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "],eax", "; deassign AReg");
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if(!isTemporary(contentsOfAReg) && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+	}
+	emit("", "cdq", "", "; sign extend dividend from eax to edx:eax");
+	emit("", "idiv", "dword [" + symbolTable.find(operand1)->second.getInternalName() + "]", "; AReg = " + operand2 + " div " + operand1);
+	emit("","xchg", "eax,edx", "; exchange quotient and remainder");
+    if(isTemporary(operand1))
+    {
+      freeTemp();   
+    }
+    if(isTemporary(operand2))
+    {
+      freeTemp();   
+    }
 	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(INTEGER);
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitNegationCode(string operand1, string)           // -op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() )
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != INTEGER)
+	{
+		processError("illegal type");
+	}
+	if (isTemporary(contentsOfAReg) && (symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg))
+	{
+
+		emit("", "mov", "[" +  symbolTable.find(contentsOfAReg)->second.getInternalName() + "],eax", "; deassign AReg");
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if (!isTemporary(contentsOfAReg) && (symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if (symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("","mov", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]");
+		contentsOfAReg = operand1;	
+	}
+	emit("","neg","eax");
 	
+	if (isTemporary(operand1))
+	{
+		freeTemp();
+	}
+	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(INTEGER);
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitNotCode(string operand1, string)               // !op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() )
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != BOOLEAN)
+	{
+		processError("illegal type");
+	}
+	if (isTemporary(contentsOfAReg) && (symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg))
+	{
+
+		emit("", "mov", "[" +  symbolTable.find(contentsOfAReg)->second.getInternalName() + "],eax", "; deassign AReg");
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if (!isTemporary(contentsOfAReg) && (symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if (contentsOfAReg != operand1)
+	{
+		emit("","mov", "eax, [" + symbolTable.find(operand1)->second.getInternalName() + "]");
+		contentsOfAReg = operand1;	
+	}
+	if (!isTemporary(contentsOfAReg) && (symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if (symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("","mov", "eax, [" + symbolTable.find(operand1)->second.getInternalName() + "]");
+		contentsOfAReg = operand1;	
+	}
+	emit("","not","eax");
 	
+	if (isTemporary(operand1))
+	{
+		freeTemp();
+	}
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(BOOLEAN);
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitAndCode(string operand1, string operand2)            // op2 && op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != BOOLEAN || symbolTable.find(operand2)->second.getDataType() != BOOLEAN)
+	{
+		processError("illegal type");
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
+	{
+		emit("", "mov", "eax, [" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "]", "; AReg = " + contentsOfAReg);
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && !isTemporary(contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "eax, [" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+
+	}
+	if (contentsOfAReg == symbolTable.find(operand2)->second.getInternalName())
+	{
+		emit("","and", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; AReg = " + operand2 + " and " + operand1);
+	}
+	else if (contentsOfAReg == symbolTable.find(operand1)->second.getInternalName())
+	{
+		emit("","and", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand1 + " and " + operand2);
+	}
+    if(isTemporary(operand1))
+    {
+      freeTemp();   
+    }
+    if(isTemporary(operand2))
+    {
+      freeTemp();   
+    }
+	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(BOOLEAN);
+	pushOperand(contentsOfAReg);
 	
 }
 void Compiler::emitOrCode(string operand1, string operand2)             // op2 || op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != BOOLEAN || symbolTable.find(operand2)->second.getDataType() != BOOLEAN)
+	{
+		processError("illegal type");
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
+	{
+		emit("", "mov", "eax, [" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "]", "; AReg = " + contentsOfAReg);
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && !isTemporary(contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "eax, [" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+
+	}
+	if (contentsOfAReg == symbolTable.find(operand2)->second.getInternalName())
+	{
+		emit("","or", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; AReg = " + operand2 + " and " + operand1);
+	}
+	else if (contentsOfAReg == symbolTable.find(operand1)->second.getInternalName())
+	{
+		emit("","or", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand1 + " and " + operand2);
+	}
+    if(isTemporary(operand1))
+    {
+      freeTemp();   
+    }
+    if(isTemporary(operand2))
+    {
+      freeTemp();   
+    }
 	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(BOOLEAN);
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitEqualityCode(string operand1, string operand2)       // op2 == op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
+	{
+		processError("illegal type");
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
+	{
+		emit("","mov", "[" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "], eax");
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && !isTemporary(contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "eax, [" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+
+	}
+	if(symbolTable.find(operand2)->second.getInternalName() == contentsOfAReg)
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; compare " + operand2 + " and " + operand1);
+	}
+	else if (contentsOfAReg == symbolTable.find(operand1)->second.getInternalName())
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; compare " + operand1 + " and " + operand2);
+	}
 	
+	string L1 = getLabel();
+	emit("", "je", L1);
+	
+	emit("", "mov", "eax, [FALSE]");
+	insert("false", BOOLEAN, CONSTANT, "0", YES, 1);
+	symbolTable.find("false")->second.setInternalName("FALSE");
+	
+	string L2 = getLabel();
+	emit("","jmp", L2);
+	
+	emit("." + L1 + ":");
+	
+	emit("", "mov", "eax, [TRUE]");
+	insert("true", BOOLEAN, CONSTANT, "-1", YES, 1);
+	symbolTable.find("true")->second.setInternalName("TRUE");
+	
+	emit("." + L2 + ":");
+	
+    if(isTemporary(operand1))
+    {
+      freeTemp();   
+    }
+    if(isTemporary(operand2))
+    {
+      freeTemp();   
+    }
+	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(BOOLEAN);
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitInequalityCode(string operand1, string operand2)     // op2 != op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
+	{
+		processError("illegal type");
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
+	{
+		emit("","mov", "[" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "], eax");
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && !isTemporary(contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "eax, [" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+
+	}
+	if(symbolTable.find(operand2)->second.getInternalName() == contentsOfAReg)
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; compare " + operand2 + " and " + operand1);
+	}
+	else if (contentsOfAReg == symbolTable.find(operand1)->second.getInternalName())
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; compare " + operand1 + " and " + operand2);
+	}
 	
+	string L1 = getLabel();
+	emit("", "jne", L1);
+	
+	emit("", "mov", "eax, [FALSE]");
+	insert("false", BOOLEAN, CONSTANT, "0", YES, 1);
+	symbolTable.find("false")->second.setInternalName("FALSE");
+	
+	string L2 = getLabel();
+	emit("","jmp", L2);
+	
+	emit("." + L1 + ":");
+	
+	emit("", "mov", "eax, [TRUE]");
+	insert("true", BOOLEAN, CONSTANT, "-1", YES, 1);
+	symbolTable.find("true")->second.setInternalName("TRUE");
+	
+	emit("." + L2 + ":");
+	
+    if(isTemporary(operand1))
+    {
+      freeTemp();   
+    }
+    if(isTemporary(operand2))
+    {
+      freeTemp();   
+    }
+	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(BOOLEAN);
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitLessThanCode(string operand1, string operand2)       // op2 <  op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
+	{
+		processError("illegal type");
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
+	{
+		emit("","mov", "[" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "], eax");
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && !isTemporary(contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "eax, [" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+
+	}
+	if(symbolTable.find(operand2)->second.getInternalName() == contentsOfAReg)
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; compare " + operand2 + " and " + operand1);
+	}
+	else if (contentsOfAReg == symbolTable.find(operand1)->second.getInternalName())
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; compare " + operand1 + " and " + operand2);
+	}
 	
+	string L1 = getLabel();
+	emit("", "jl", L1);
+	
+	emit("", "mov", "eax, [FALSE]");
+	insert("false", BOOLEAN, CONSTANT, "0", YES, 1);
+	symbolTable.find("false")->second.setInternalName("FALSE");
+	
+	string L2 = getLabel();
+	emit("","jmp", L2);
+	
+	emit("." + L1 + ":");
+	
+	emit("", "mov", "eax, [TRUE]");
+	insert("true", BOOLEAN, CONSTANT, "-1", YES, 1);
+	symbolTable.find("true")->second.setInternalName("TRUE");
+	
+	emit("." + L2 + ":");
+	
+    if(isTemporary(operand1))
+    {
+      freeTemp();   
+    }
+    if(isTemporary(operand2))
+    {
+      freeTemp();   
+    }
+	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(BOOLEAN);
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitLessThanOrEqualToCode(string operand1, string operand2) // op2 <= op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
+	{
+		processError("illegal type");
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
+	{
+		emit("","mov", "[" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "], eax");
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && !isTemporary(contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "eax, [" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+	}
+	if(symbolTable.find(operand2)->second.getInternalName() == contentsOfAReg)
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; compare " + operand2 + " and " + operand1);
+	}
+	else if (contentsOfAReg == symbolTable.find(operand1)->second.getInternalName())
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; compare " + operand1 + " and " + operand2);
+	}
 	
+	string L1 = getLabel();
+	emit("", "jle", L1);
+	
+	emit("", "mov", "eax, [FALSE]");
+	insert("false", BOOLEAN, CONSTANT, "0", YES, 1);
+	symbolTable.find("false")->second.setInternalName("FALSE");
+	
+	string L2 = getLabel();
+	emit("","jmp", L2);
+	
+	emit("." + L1 + ":");
+	
+	emit("", "mov", "eax, [TRUE]");
+	insert("true", BOOLEAN, CONSTANT, "-1", YES, 1);
+	symbolTable.find("true")->second.setInternalName("TRUE");
+	
+	emit("." + L2 + ":");
+	
+    if(isTemporary(operand1))
+    {
+      freeTemp();   
+    }
+    if(isTemporary(operand2))
+    {
+      freeTemp();   
+    }
+	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(BOOLEAN);
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitGreaterThanCode(string operand1, string operand2)    // op2 >  op1
 {
+	cout << "DO WE GET HERE???" << endl;
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
+	{
+		processError("illegal type");
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
+	{
+		emit("","mov", "[" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "], eax", "; deassign AReg");
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && !isTemporary(contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "eax, [" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+	}
+	if(symbolTable.find(operand2)->second.getInternalName() == contentsOfAReg)
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; compare " + operand2 + " and " + operand1);
+	}
+	else if (contentsOfAReg == symbolTable.find(operand1)->second.getInternalName())
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; compare " + operand1 + " and " + operand2);
+	}
 	
+	string L1 = getLabel();
+	emit("", "jg", L1);
+	
+	emit("", "mov", "eax, [FALSE]");
+	insert("false", BOOLEAN, CONSTANT, "0", YES, 1);
+	symbolTable.find("false")->second.setInternalName("FALSE");
+	
+	string L2 = getLabel();
+	emit("","jmp", L2);
+	
+	emit("." + L1 + ":");
+	
+	emit("", "mov", "eax, [TRUE]");
+	insert("true", BOOLEAN, CONSTANT, "-1", YES, 1);
+	symbolTable.find("true")->second.setInternalName("TRUE");
+	
+	emit("." + L2 + ":");
+	
+    if(isTemporary(operand1))
+    {
+      freeTemp();   
+    }
+    if(isTemporary(operand2))
+    {
+      freeTemp();   
+    }
+	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(BOOLEAN);
+	pushOperand(contentsOfAReg);
 }
 void Compiler::emitGreaterThanOrEqualToCode(string operand1, string operand2) // op2 >= op1
 {
+	if(symbolTable.find(operand1) == symbolTable.end() || symbolTable.find(operand2) == symbolTable.end())
+	{
+		processError("reference to an undefined constant");
+	}
+	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
+	{
+		processError("illegal type");
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
+	{
+		emit("","mov", "[" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "], eax");
+		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && !isTemporary(contentsOfAReg))
+	{
+		contentsOfAReg = "";
+	}
+	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	{
+		emit("", "mov", "eax, [" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
+		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
+	}
+	if(symbolTable.find(operand2)->second.getInternalName() == contentsOfAReg)
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; compare " + operand2 + " and " + operand1);
+	}
+	else if (contentsOfAReg == symbolTable.find(operand1)->second.getInternalName())
+	{
+		emit("","cmp", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; compare " + operand1 + " and " + operand2);
+	}
 	
+	string L1 = getLabel();
+	emit("", "jge", L1);
+	
+	emit("", "mov", "eax, [FALSE]");
+	insert("false", BOOLEAN, CONSTANT, "0", YES, 1);
+	symbolTable.find("false")->second.setInternalName("FALSE");
+	
+	string L2 = getLabel();
+	emit("","jmp", L2);
+	
+	emit("." + L1 + ":");
+	
+	emit("", "mov", "eax, [TRUE]");
+	insert("true", BOOLEAN, CONSTANT, "-1", YES, 1);
+	symbolTable.find("true")->second.setInternalName("TRUE");
+	
+	emit("." + L2 + ":");
+	
+    if(isTemporary(operand1))
+    {
+      freeTemp();   
+    }
+    if(isTemporary(operand2))
+    {
+      freeTemp();   
+    }
+	
+	contentsOfAReg = getTemp();
+	symbolTable.find(contentsOfAReg)->second.setDataType(BOOLEAN);
+	pushOperand(contentsOfAReg);
 }
 
 
@@ -1218,7 +2031,8 @@ void Compiler::beginEndStmt() //token should be "begin"
 		processError("keyword \"begin\" expected");
 	nextToken();
 	execStmts();
-	if (nextToken() != "end")
+	cout << "returning from execStmts to beginEndStmt" << endl;
+	if (token != "end")
 		processError("keyword \"end\" expected");
 	if (nextToken() != ".")
 		processError("period expected");
@@ -1424,8 +2238,9 @@ void Compiler::assignStmt()     // stage 1, production 4
 		processError("';' expected");
 	}
 	cout << "stack modifications in assignStmt" << endl;
-	
-	code(popOperator(), popOperand(), popOperand());
+	string rhs = popOperand();
+	string lhs = popOperand();
+	code(popOperator(), rhs, lhs);
 	//cout << "Exiting assignStmt" << endl;
 }
 void Compiler::readStmt()       // stage 1, production 5
@@ -1515,7 +2330,9 @@ void Compiler::expresses()      // stage 1, production 10
 		cout << "returning from term to expresses" << endl;
 
 		cout << "stack modifications in expresses" << endl;
-		code(popOperator(), popOperand(), popOperand());
+		string rhs = popOperand();
+		string lhs = popOperand();
+		code(popOperator(), rhs, lhs);
 		cout << "calling expresses in expresses(recursive)" << endl;
 		expresses();
 		cout << "returning from expresses to expresses" << endl;
@@ -1553,6 +2370,7 @@ void Compiler::terms()          // stage 1, production 12
 	cout << "Entering terms()" << endl;
 	if(token == "-" || token == "+" || token == "or")
 	{
+		//cout << "---token--- in terms: " << token << endl;
 		pushOperator(token);
 		nextToken();
 		cout << "calling factor in terms" << endl;
@@ -1560,7 +2378,9 @@ void Compiler::terms()          // stage 1, production 12
 		cout << "returning from factor to terms" << endl;
 
 		cout << "stack modifications in terms" << endl;
-		code(popOperator(), popOperand(), popOperand());
+		string rhs = popOperand();
+		string lhs = popOperand();
+		code(popOperator(), rhs, lhs);
 		cout << "calling terms in terms(recursive)" << endl;
 		terms();
 		cout << "returning from terms to terms" << endl;
@@ -1605,7 +2425,9 @@ void Compiler::factors()        // stage 1, production 14
 		cout << "returning from part to factors" << endl;
 
 		cout << "stack modifications in factors" << endl;
-		code(popOperator(),popOperand(),popOperand());
+			string rhs = popOperand();
+			string lhs = popOperand();
+			code(popOperator(), rhs, lhs);
 		cout << "calling factors in factors(recursive)" << endl;
 		factors();
 		cout << "returning from factors to factors" << endl;
