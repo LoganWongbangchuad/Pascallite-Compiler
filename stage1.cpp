@@ -150,8 +150,8 @@ OTHER ROUTINES------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------
 void Compiler::processError(string err)
 {
-	cout << err << endl;
-	cout << "Last Token: " << token << endl;
+	//cout << err << endl;
+	//cout << "Last Token: " << token << endl;
 	listingFile << endl;
 	listingFile << "Error: Line " << lineNo << ": ";
 	listingFile << err << endl;
@@ -203,7 +203,7 @@ string Compiler::getTemp()
 		insert(temp, UNKNOWN, VARIABLE, "", NO, 1);
 		maxTempNo++;
 	}
-	cout << "temp: " << temp << endl;
+	//cout << "temp: " << temp << endl;
 	return temp;
 }
 string Compiler::getLabel()
@@ -382,7 +382,7 @@ string Compiler::nextToken()
 		}
 	}
 	
-	cout << "								Token: " << token << endl;
+	//cout << "								Token: " << token << endl;
 	//cout << "Exit nextToken" << endl;
  return token;
 }
@@ -451,8 +451,13 @@ bool Compiler::isNonKeyId(string s) const // determines if s is a non_key_id
 
     // A non-key ID cannot be a keyword
     if (isKeyword(s))
+	{
         return false;
-
+	}
+	if(isdigit(s[0]))
+	{
+		return false;
+	}
     // A non-key ID must consist only of lowercase letters, digits, or underscores
     // Additionally, it cannot contain consecutive underscores
     for (uint i = 0; i < s.length(); ++i)
@@ -620,7 +625,7 @@ void Compiler::insert(string externalName, storeTypes inType, modes inMode, stri
 		}
 		else if (isKeyword(name))
 		{
-			cout << "name: " << name << endl;
+			//cout << "name: " << name << endl;
 			processError("illegal use of keyword");
 		}
 		else //create table entry
@@ -725,7 +730,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "+ error" << endl;
+			//cout << "+ error" << endl;
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
 		emitAdditionCode(operand1, operand2);
@@ -734,7 +739,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "- error" << endl;
+			//cout << "- error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -752,9 +757,9 @@ void Compiler::code(string op, string operand1, string operand2)
 		}
 		else
 		{
-			cout << operand1 << endl;
-			cout << operand2 << endl;
-			cout << "neg error" << endl;
+			//cout << operand1 << endl;
+			//cout << operand2 << endl;
+			//cout << "neg error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -771,9 +776,9 @@ void Compiler::code(string op, string operand1, string operand2)
 		}
 		else
 		{
-			cout << operand1 << endl;
-			cout << operand2 << endl;
-			cout << "not error" << endl;
+			//cout << operand1 << endl;
+			//cout << operand2 << endl;
+			//cout << "not error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -782,7 +787,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "* error" << endl;
+			//cout << "* error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -792,7 +797,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "div error" << endl;
+			//cout << "div error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -802,7 +807,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "mod error" << endl;
+			//cout << "mod error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -812,7 +817,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "and error" << endl;
+			//cout << "and error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -822,7 +827,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "or error" << endl;
+			//cout << "or error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -832,7 +837,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "= error" << endl;
+			//cout << "= error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -842,7 +847,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "< error" << endl;
+			//cout << "< error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -852,7 +857,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "<= error" << endl;
+			//cout << "<= error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -862,7 +867,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "> error" << endl;
+			//cout << "> error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -872,7 +877,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << ">= error" << endl;
+			//cout << ">= error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -882,7 +887,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << "<> error" << endl;
+			//cout << "<> error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -892,7 +897,7 @@ void Compiler::code(string op, string operand1, string operand2)
 	{
 		if(operand1 == "" || operand2 == "")
 		{
-			cout << ":= error" << endl;
+			//cout << ":= error" << endl;
 
 			processError("compiler error since function code should not be called with illegal arguments");
 		}
@@ -900,14 +905,14 @@ void Compiler::code(string op, string operand1, string operand2)
 	}
 	else
 	{
-		cout << "compiler error" << endl;
+		//cout << "compiler error" << endl;
 
 		processError("compiler error since function code should not be called with illegal arguments");
 	}
 }
 void Compiler::pushOperator(string op)
 {
-	cout << "				pushed operator: " << op << endl;
+	//cout << "				pushed operator: " << op << endl;
 
 	operatorStk.push(op);
 }
@@ -916,7 +921,7 @@ string Compiler::popOperator()
 	if(!operatorStk.empty())
 	{
 		string top = operatorStk.top();
-		cout << "				Top of operator stack: " << top << endl;
+		//cout << "				Top of operator stack: " << top << endl;
 		operatorStk.pop();
 		return top;
 	}
@@ -929,7 +934,7 @@ string Compiler::popOperator()
 }
 void Compiler::pushOperand(string operand)
 {
-	cout << "				pushed operand: " << operand << endl;
+	//cout << "				pushed operand: " << operand << endl;
 	if(isBoolean(operand))
 	{
 		if(operand == "true")
@@ -953,7 +958,7 @@ string Compiler::popOperand()
 	if(!operandStk.empty())
 	{
 		string top = operandStk.top();
-		cout << "				Top of operand stack: " << top << endl;
+		//cout << "				Top of operand stack: " << top << endl;
 
 		operandStk.pop();
 		return top;
@@ -1022,7 +1027,7 @@ void Compiler::emitPrologue(string progName, string)
 	emit("SECTION", ".text");
 	//objectFile << endl;
 	emit("global", "_start", "", "; program " + progName.substr(0,15));
-	objectFile << endl << endl;
+	objectFile << endl;
 	emit("_start:");
 	//objectFile << endl;
 }
@@ -1081,7 +1086,7 @@ void Compiler::emitReadCode(string operand, string)
 		}
 		if(symbolTable.find(name)->second.getMode() != VARIABLE)
 		{
-			processError("attempting to read to a read-only location");
+			processError("reading in of read-only location " + name);
 		}
 		emit("","call", "ReadInt", "; read int; value placed in eax");
 		emit("", "mov","[" + symbolTable.find(name)->second.getInternalName() + "],eax", "; store eax at " + symbolTable.find(name)->first);
@@ -1094,7 +1099,7 @@ void Compiler::emitWriteCode(string operand, string)
 {
 	string name;
 	
-	static bool definedStorage = false;
+	//static bool definedStorage = false;
 	
 	istringstream names(operand);
 	while (getline(names, name, ','))
@@ -1234,9 +1239,9 @@ void Compiler::emitSubtractionCode(string operand1, string operand2)    // op2 -
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != INTEGER || symbolTable.find(operand2)->second.getDataType() != INTEGER)
 	{
-		processError("illegal type");
+		processError("binary '-' requires integer operands");
 	}
-	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
+	if(symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
 	{
 		emit("", "mov", "[" + contentsOfAReg + "],eax", "; deassign AReg");// emit code to store that temp into memory
 		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);//change the allocate entry for the temp in the symbol table to yes deassign it
@@ -1246,20 +1251,21 @@ void Compiler::emitSubtractionCode(string operand1, string operand2)    // op2 -
 	{
 		contentsOfAReg = "";
 	}
-	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
+	if(symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
 	{
 		emit("", "mov", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
 		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
 	}
+	/*
 	if (contentsOfAReg == symbolTable.find(operand2)->second.getInternalName())
-	{
+	{*/
 		emit("", "sub", "eax,[" + symbolTable.find(operand1)->second.getInternalName() + "]", "; AReg = " + operand2 + " - " + operand1);
-	}
+	/*}
 	else
 	{
 		emit("", "sub", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2 + " - " + operand1);
 	}
-	
+	*/
 	if(isTemporary(operand1))
 	{
 		freeTemp();		
@@ -1285,7 +1291,7 @@ void Compiler::emitMultiplicationCode(string operand1, string operand2) // op2 *
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != INTEGER || symbolTable.find(operand2)->second.getDataType() != INTEGER)
 	{
-		processError("illegal type");
+		processError("binary '*' requires integer operands");
 	}
 	if(isTemporary(contentsOfAReg) && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
 	{
@@ -1342,7 +1348,7 @@ void Compiler::emitDivisionCode(string operand1, string operand2)       // op2 /
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != INTEGER || symbolTable.find(operand2)->second.getDataType() != INTEGER)
 	{
-		processError("illegal type");
+		processError("binary 'div' requires integer operands");
 	}
 	if(isTemporary(contentsOfAReg) && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
 	{
@@ -1356,7 +1362,7 @@ void Compiler::emitDivisionCode(string operand1, string operand2)       // op2 /
 	}
 	if(symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg)
 	{
-		emit("", "mov", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2 + " div " + operand1);
+		emit("", "mov", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
 		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
 	}
 	emit("", "cdq", "", "; sign extend dividend from eax to edx:eax");
@@ -1387,7 +1393,7 @@ void Compiler::emitModuloCode(string operand1, string operand2)         // op2 %
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != INTEGER || symbolTable.find(operand2)->second.getDataType() != INTEGER)
 	{
-		processError("illegal type");
+		processError("binary 'mod' requires integer operands");
 	}
 	if(isTemporary(contentsOfAReg) && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
 	{
@@ -1399,7 +1405,7 @@ void Compiler::emitModuloCode(string operand1, string operand2)         // op2 %
 	{
 		contentsOfAReg = "";
 	}
-	if(symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg)
+	if(symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg /*&& symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg*/)
 	{
 		emit("", "mov", "eax,[" + symbolTable.find(operand2)->second.getInternalName() + "]", "; AReg = " + operand2);
 		contentsOfAReg = symbolTable.find(operand2)->second.getInternalName();
@@ -1428,7 +1434,7 @@ void Compiler::emitNegationCode(string operand1, string)           // -op1
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != INTEGER)
 	{
-		processError("illegal type");
+		processError("unary '-' requires an integer operand");
 	}
 	if (isTemporary(contentsOfAReg) && (symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg))
 	{
@@ -1465,7 +1471,7 @@ void Compiler::emitNotCode(string operand1, string)               // !op1
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != BOOLEAN)
 	{
-		processError("illegal type");
+		processError("unary 'not' requires a boolean operand");
 	}
 	if (isTemporary(contentsOfAReg) && (symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg))
 	{
@@ -1558,7 +1564,7 @@ void Compiler::emitOrCode(string operand1, string operand2)             // op2 |
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != BOOLEAN || symbolTable.find(operand2)->second.getDataType() != BOOLEAN)
 	{
-		processError("illegal type");
+		processError("binary 'or' requires boolean operands");
 	}
 	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
 	{
@@ -1609,7 +1615,7 @@ void Compiler::emitEqualityCode(string operand1, string operand2)       // op2 =
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
 	{
-		processError("illegal type");
+		processError("binary '=' requires operands of the same type");
 	}
 	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
 	{
@@ -1677,11 +1683,11 @@ void Compiler::emitInequalityCode(string operand1, string operand2)     // op2 !
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
 	{
-		processError("illegal type");
+		processError("binary '<>' requires operands of the same type");
 	}
 	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
 	{
-		emit("","mov", "[" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "], eax");
+		emit("","mov", "[" + symbolTable.find(contentsOfAReg)->second.getInternalName() + "],eax", "; deassign AReg");
 		symbolTable.find(contentsOfAReg)->second.setAlloc(YES);
 		contentsOfAReg = "";
 	}
@@ -1705,7 +1711,7 @@ void Compiler::emitInequalityCode(string operand1, string operand2)     // op2 !
 	}
 	
 	string L1 = getLabel();
-	emit("", "je", "." + L1, "; if " + operand2 + " = " + operand1 + " then jump to set eax to TRUE");
+	emit("", "jne", "." + L1, "; if " + operand2 + " <> " + operand1 + " then jump to set eax to TRUE");
 	
 	emit("", "mov", "eax,[FALSE]", "; else set eax to FALSE");
 	symbolTable.insert({"false", SymbolTableEntry("FALSE", BOOLEAN, CONSTANT, "0", YES, 1)});
@@ -1745,7 +1751,7 @@ void Compiler::emitLessThanCode(string operand1, string operand2)       // op2 <
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
 	{
-		processError("illegal type");
+		processError("binary '<' requires integer operands");
 	}
 	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
 	{
@@ -1813,7 +1819,7 @@ void Compiler::emitLessThanOrEqualToCode(string operand1, string operand2) // op
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
 	{
-		processError("illegal type");
+		processError("binary '<=' requires integer operands");
 	}
 	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
 	{
@@ -1880,7 +1886,7 @@ void Compiler::emitGreaterThanCode(string operand1, string operand2)    // op2 >
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
 	{
-		processError("illegal type");
+		processError("binary '>' requires integer operands");
 	}
 	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
 	{
@@ -1907,7 +1913,7 @@ void Compiler::emitGreaterThanCode(string operand1, string operand2)    // op2 >
 	}
 	
 	string L1 = getLabel();
-	emit("", "je", "." + L1, "; if " + operand2 + " = " + operand1 + " then jump to set eax to TRUE");
+	emit("", "jg", "." + L1, "; if " + operand2 + " > " + operand1 + " then jump to set eax to TRUE");
 	
 	emit("", "mov", "eax,[FALSE]", "; else set eax to FALSE");
 	symbolTable.insert({"false", SymbolTableEntry("FALSE", BOOLEAN, CONSTANT, "0", YES, 1)});
@@ -1947,7 +1953,7 @@ void Compiler::emitGreaterThanOrEqualToCode(string operand1, string operand2) //
 	}
 	if(symbolTable.find(operand1)->second.getDataType() != symbolTable.find(operand2)->second.getDataType())
 	{
-		processError("illegal type");
+		processError("binary '>=' requires integer operands");
 	}
 	if(symbolTable.find(operand1)->second.getInternalName() != contentsOfAReg && symbolTable.find(operand2)->second.getInternalName() != contentsOfAReg && isTemporary(contentsOfAReg))
 	{
@@ -2094,7 +2100,7 @@ void Compiler::beginEndStmt() //token should be "begin"
 		processError("keyword \"begin\" expected");
 	nextToken();
 	execStmts();
-	cout << "returning from execStmts to beginEndStmt" << endl;
+	//cout << "returning from execStmts to beginEndStmt" << endl;
 	if (token != "end")
 		processError("keyword \"end\" expected");
 	if (nextToken() != ".")
@@ -2129,7 +2135,7 @@ void Compiler::constStmts() //token should be NON_KEY_ID
 		{
 			if(isNonKeyId(token))
 			{
-				cout << "Here" << endl;
+				//cout << "Here" << endl;
 				if(symbolTable.find(token)->second.getDataType() != BOOLEAN)
 				{
 					//cout << "here" << endl;
@@ -2202,7 +2208,8 @@ void Compiler::varStmts() //token should be NON_KEY_ID
 
 string Compiler::ids() //token should be NON_KEY_ID
 {
-	cout << "Entering ids()" << endl;
+	//cout << "Entering ids()" << endl;
+	//cout << "Token in IDS: " << token << endl;
 	string temp,tempString;
 	if (!isNonKeyId(token))
 		processError("non-keyword identifier expected");
@@ -2220,14 +2227,14 @@ string Compiler::ids() //token should be NON_KEY_ID
 
 void Compiler::execStmts()      // stage 1, production 2
 {	
-	cout << "entering execStmts()" << endl;
+	//cout << "entering execStmts()" << endl;
 	if (isNonKeyId(token) || token == "read" || token == "write")	
 	{
-		cout << "calling execStmt in execStmts" << endl;
+		//cout << "calling execStmt in execStmts" << endl;
 		execStmt();	
-		cout << "returning from execStmt to execStmts" << endl;
+		//cout << "returning from execStmt to execStmts" << endl;
 		nextToken();
-		cout << "calling execStmts in execStmts(recursive)" << endl;
+		//cout << "calling execStmts in execStmts(recursive)" << endl;
 		execStmts();	
 		//cout << "returning from execStmts to execStmts(recursive)" << endl;
 
@@ -2240,35 +2247,35 @@ void Compiler::execStmts()      // stage 1, production 2
 }
 void Compiler::execStmt()       // stage 1, production 3
 {	  
-	cout << "Entering execStmt()" << endl;
+	//cout << "Entering execStmt()" << endl;
 	if(isNonKeyId(token))
 	{
-		cout << "calling assignStmt in execStmt" << endl;
+		//cout << "calling assignStmt in execStmt" << endl;
 		assignStmt();
-		cout << "returning from assignStmt to execStmt" << endl;
+		//cout << "returning from assignStmt to execStmt" << endl;
 
 	}
 	else if(token == "read")
 	{
-		cout << "calling readStmt in execStmt" << endl;
+		//cout << "calling readStmt in execStmt" << endl;
 		
 		readStmt();
-		cout << "returning from readStmt to execStmt" << endl;
+		//cout << "returning from readStmt to execStmt" << endl;
 
 	}
 	else if(token == "write")
 	{
-		cout << "calling writeStmt in execStmt" << endl;
+		//cout << "calling writeStmt in execStmt" << endl;
 
 		writeStmt();
-		cout << "returning from writeStmt to execStmt" << endl;
+		//cout << "returning from writeStmt to execStmt" << endl;
 
 	}
 	else if (nextToken() != "end")
 	{
-		cout << "calling execStmt in execStmt(recursive)" << endl;
+		//cout << "calling execStmt in execStmt(recursive)" << endl;
 		execStmt();
-		cout << "returning from execStmt to execStmts" << endl;
+		//cout << "returning from execStmt to execStmts" << endl;
 
 	}
 	else
@@ -2279,7 +2286,7 @@ void Compiler::execStmt()       // stage 1, production 3
 }
 void Compiler::assignStmt()     // stage 1, production 4
 {	 
-	cout << "Entering assignStmt()" << endl;
+	//cout << "Entering assignStmt()" << endl;
 	if(!isNonKeyId(token))
 	{
 		processError("assignStmt error");
@@ -2288,19 +2295,19 @@ void Compiler::assignStmt()     // stage 1, production 4
 	nextToken();
 	if(token != ":=")
 	{
-		processError("assignStmt error");
+		processError("':=' expected in assignment statement");
 	}
 	pushOperator(":=");
 	nextToken();
-	cout << "calling express in assignStmt" << endl;
+	//cout << "calling express in assignStmt" << endl;
 	express();
-	cout << "returning from express to assignStmts" << endl;
+	//cout << "returning from express to assignStmts" << endl;
 
 	if(token != ";")
 	{
 		processError("';' expected");
 	}
-	cout << "stack modifications in assignStmt" << endl;
+	//cout << "stack modifications in assignStmt" << endl;
 	string rhs = popOperand();
 	string lhs = popOperand();
 	code(popOperator(), rhs, lhs);
@@ -2308,7 +2315,7 @@ void Compiler::assignStmt()     // stage 1, production 4
 }
 void Compiler::readStmt()       // stage 1, production 5
 {	
-	cout << "Entering readStmt()" << endl;
+	//cout << "Entering readStmt()" << endl;
 	if(token != "read")
 	{
 		processError("readStmt error");
@@ -2317,26 +2324,26 @@ void Compiler::readStmt()       // stage 1, production 5
 	nextToken();
 	if(token != "(")
 	{
-		processError("Expecting (");
+		processError("'(' expected after \"read\"");
 	}
 	nextToken();
 	string id = ids();
 	if(token != ")")
 	{
-		processError("Expecting )");
+		processError("')' expected are non_key_id in \"read\"");
 	}
 	code("read", id);
 	nextToken();
 	if(token != ";")
 	{
-		processError("Expecting ;");
+		processError("';' expected");
 	}
 	
 	//cout << "Exiting readStmt" << endl;
 }
 void Compiler::writeStmt()      // stage 1, production 7
 {	  
-	cout << "Entering writeStmt()" << endl;
+	//cout << "Entering writeStmt()" << endl;
 	if(token != "write")
 	{
 		processError("Expecting write");
@@ -2344,37 +2351,37 @@ void Compiler::writeStmt()      // stage 1, production 7
 	nextToken();
 	if(token != "(")
 	{
-		processError("Expecting (");
+		processError("'(' expected after \"write\"");
 	}
 	nextToken();
 	string id = ids();
 	if(token != ")")
 	{
-		processError("Expecting )");
+		processError("')' expected");
 	}
 	code("write", id);
 	nextToken();
 	if(token != ";")
 	{
-		processError("Expecting ;");
+		processError("';' expected");
 	}
-	cout << "Exiting writeStmt" << endl;
+	//cout << "Exiting writeStmt" << endl;
 }
 void Compiler::express()        // stage 1, production 9
 {
-	cout << "Entering express()" << endl;
+	//cout << "Entering express()" << endl;
 	
 	//cout << "Token in express: " << token << endl;
 	if(token == "not" || token == "true" || token == "false" || token == "(" ||
 	   token == "+" || token == "-" || isInteger(token) || isNonKeyId(token))
 	   {
-		   cout << "calling term in express" << endl;
+		   //cout << "calling term in express" << endl;
 		   term();
-			cout << "returning from term to express" << endl;
+			//cout << "returning from term to express" << endl;
 	
-		   cout << "calling expresses in express" << endl;
+		   //cout << "calling expresses in express" << endl;
 		   expresses();
-		   cout << "returning from expresses to express" << endl;
+		   //cout << "returning from expresses to express" << endl;
 
 	   }
 	
@@ -2383,22 +2390,22 @@ void Compiler::express()        // stage 1, production 9
 }
 void Compiler::expresses()      // stage 1, production 10
 {
-	cout << "Entering expresses()" << endl;
+	//cout << "Entering expresses()" << endl;
 	if(token == "<>" || token == "=" || token == "<=" || token == ">=" || token == "<" || token == ">")
 	{
 		pushOperator(token);
 		nextToken();
-		cout << "calling term in expresses" << endl;
+		//cout << "calling term in expresses" << endl;
 		term();
-		cout << "returning from term to expresses" << endl;
+		//cout << "returning from term to expresses" << endl;
 
-		cout << "stack modifications in expresses" << endl;
+		//cout << "stack modifications in expresses" << endl;
 		string rhs = popOperand();
 		string lhs = popOperand();
 		code(popOperator(), rhs, lhs);
-		cout << "calling expresses in expresses(recursive)" << endl;
+		//cout << "calling expresses in expresses(recursive)" << endl;
 		expresses();
-		cout << "returning from expresses to expresses" << endl;
+		//cout << "returning from expresses to expresses" << endl;
 
 	}
 	if(token == ")" || token == ";")
@@ -2411,18 +2418,18 @@ void Compiler::expresses()      // stage 1, production 10
 }
 void Compiler::term()           // stage 1, production 11
 {	  
-	cout << "Entering term()" << endl;
+	//cout << "Entering term()" << endl;
 	
 	if(token == "not" || token == "true" || token == "false" || token == "(" || token == "+" ||
 	   token == "-" || isInteger(token) || isNonKeyId(token))
 	   {
-		   cout << "calling factor in term" << endl;
+		   //cout << "calling factor in term" << endl;
 		   factor();
-			cout << "returning from factor to term" << endl;
+			//cout << "returning from factor to term" << endl;
 
-		   cout << "calling terms in term" << endl;
+		  // cout << "calling terms in term" << endl;
 		   terms();
-			cout << "returning from terms to term" << endl;
+			//cout << "returning from terms to term" << endl;
 
 	   }
 	
@@ -2430,23 +2437,23 @@ void Compiler::term()           // stage 1, production 11
 }
 void Compiler::terms()          // stage 1, production 12
 {	  
-	cout << "Entering terms()" << endl;
+	//cout << "Entering terms()" << endl;
 	if(token == "-" || token == "+" || token == "or")
 	{
 		//cout << "---token--- in terms: " << token << endl;
 		pushOperator(token);
 		nextToken();
-		cout << "calling factor in terms" << endl;
+		//cout << "calling factor in terms" << endl;
 		factor();
-		cout << "returning from factor to terms" << endl;
+		//cout << "returning from factor to terms" << endl;
 
-		cout << "stack modifications in terms" << endl;
+		//cout << "stack modifications in terms" << endl;
 		string rhs = popOperand();
 		string lhs = popOperand();
 		code(popOperator(), rhs, lhs);
-		cout << "calling terms in terms(recursive)" << endl;
+		//cout << "calling terms in terms(recursive)" << endl;
 		terms();
-		cout << "returning from terms to terms" << endl;
+		//cout << "returning from terms to terms" << endl;
 
 	}
 	if(token == "<>" || token == "=" || token == "<=" || token == ">=" || token == "<" ||
@@ -2458,18 +2465,18 @@ void Compiler::terms()          // stage 1, production 12
 }
 void Compiler::factor()         // stage 1, production 13
 {	 
-	cout << "Entering factor()" << endl;
+	//cout << "Entering factor()" << endl;
 	
 	if(token == "not" || token == "true" || token == "false" || token == "(" || token == "+" ||
 	   token == "-" || isInteger(token) || isNonKeyId(token))
 	   {
-		    cout << "calling part in factor" << endl;
+		   // cout << "calling part in factor" << endl;
 			part();
-			cout << "returning from part to factor" << endl;
+			//cout << "returning from part to factor" << endl;
 
-			cout << "calling factors in factor" << endl;
+			//cout << "calling factors in factor" << endl;
 			factors();  
-			cout << "returning from factors to factor" << endl;
+			//cout << "returning from factors to factor" << endl;
 
 	   }
 
@@ -2478,22 +2485,22 @@ void Compiler::factor()         // stage 1, production 13
 }
 void Compiler::factors()        // stage 1, production 14
 {
-	cout << "Entering factors()" << endl;
+	//cout << "Entering factors()" << endl;
 	if(token == "*" || token == "div" || token == "mod" || token == "and")
 	{
 		pushOperator(token);
 		nextToken();
-		cout << "calling part in factors" << endl;
+		//cout << "calling part in factors" << endl;
 		part();
-		cout << "returning from part to factors" << endl;
+		//cout << "returning from part to factors" << endl;
 
-		cout << "stack modifications in factors" << endl;
+		//cout << "stack modifications in factors" << endl;
 			string rhs = popOperand();
 			string lhs = popOperand();
 			code(popOperator(), rhs, lhs);
-		cout << "calling factors in factors(recursive)" << endl;
+		//cout << "calling factors in factors(recursive)" << endl;
 		factors();
-		cout << "returning from factors to factors" << endl;
+		//cout << "returning from factors to factors" << endl;
 
 	}
 	else if(token == "<>" || token == "=" || token == "<=" || token == ">=" || token == "<" ||
@@ -2509,7 +2516,7 @@ void Compiler::factors()        // stage 1, production 14
 }
 void Compiler::part()           // stage 1, production 15
 {	
-	cout << "Entering part()" << endl;
+	//cout << "Entering part()" << endl;
 	if(token == "not")
 	{
 		//cout << "Token = not" << endl;
@@ -2517,9 +2524,9 @@ void Compiler::part()           // stage 1, production 15
 		if(token == "(")
 		{
 			nextToken();
-			cout << "calling express in part" << endl;
+			//cout << "calling express in part" << endl;
 			express();
-			cout << "returning from express to part" << endl;
+			//cout << "returning from express to part" << endl;
 
 			if (token != ")")
 			{
@@ -2548,21 +2555,21 @@ void Compiler::part()           // stage 1, production 15
 		}
 		else
 		{
-			processError("(, bool, or non-key-id not after not");
+			processError("expected '(', boolean, or non-keyword id");
 		}
 		
 	}
 	else if(token == "+")
 	{
-		cout << "do we get HERE???" << endl;
+		//cout << "do we get HERE???" << endl;
 		//cout << "token = +" << endl;
 		nextToken();
 		if(token == "(")
 		{
 			nextToken();
-			cout << "calling express in part" << endl;
+			//cout << "calling express in part" << endl;
 			express();
-			cout << "returning from express to part" << endl;
+			//cout << "returning from express to part" << endl;
 
 			if (token != ")")
 			{
@@ -2587,10 +2594,10 @@ void Compiler::part()           // stage 1, production 15
 		if(token == "(")
 		{
 			nextToken();
-			cout << "calling express in part" << endl;
+			//cout << "calling express in part" << endl;
 
 			express();
-			cout << "returning from express to part" << endl;
+			//cout << "returning from express to part" << endl;
 
 			if (token != ")")
 			{
@@ -2613,16 +2620,16 @@ void Compiler::part()           // stage 1, production 15
 		}
 		else
 		{
-			processError("(, int, or non key id is not after +");
+			processError("expected '(', integer, or non_key_id");
 		}
 	}
 	else if(token == "(")
 	{
 		//cout << "token = (" << endl;
 		nextToken();
-		cout << "calling express in part" << endl;
+		//cout << "calling express in part" << endl;
 		express();
-		cout << "returning from express to part" << endl;
+		//cout << "returning from express to part" << endl;
 
 		if (token != ")")
 		{
